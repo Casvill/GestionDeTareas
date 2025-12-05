@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-import GestorTareas
+import TaskManager
 import datetime
 from tkcalendar import DateEntry
 
@@ -16,7 +16,7 @@ class App:
     #------------------------------------------------------------------------------------
     def __init__(self, root):
 
-        self.gestor = GestorTareas.GestorTareas()
+        self.gestor = TaskManager.TaskManager()
         self.root = root
         self.root.title("Sistema de Gestión de Tareas (Heap + AVL)")
         self.root.geometry("1150x720")
@@ -103,7 +103,7 @@ class App:
         frame_act = tk.Frame(root, bg="#eef1f5")
         frame_act.pack(fill="x", pady=5)
 
-        rounded_button(frame_act, "Atender más urgente (Heap)",
+        rounded_button(frame_act, "Atender tarea más urgente (Heap)",
                     self.atender, "#ffd6d6").pack(side="left", padx=10)
 
         ttk.Label(frame_act, text="Buscar ID:",
@@ -326,7 +326,6 @@ class App:
 
 
     def dibujar_heap(self):
-        """Dibuja el heap (self.gestor.heap.heap) como árbol completo por niveles."""
         self.ax_heap.clear()
 
         heap_list = getattr(self.gestor.heap, "heap", [])
@@ -338,7 +337,6 @@ class App:
             self.canvas_heap.draw()
             return
 
-        # calcular niveles
         niveles = []
         i = 0
         count = 1
@@ -347,20 +345,19 @@ class App:
             i += count
             count *= 2
 
-        # layout: x por posición en nivel, y por nivel
         niveles_count = len(niveles)
         for lvl, nodos in enumerate(niveles):
             y = 1 - (lvl + 1) / (niveles_count + 1)
             m = len(nodos)
+
             for j, tarea in enumerate(nodos):
                 x = (j + 1) / (m + 1)
 
-                # calcular índice global
                 idx_global = sum(len(l) for l in niveles[:lvl]) + j
                 left = 2 * idx_global + 1
                 right = 2 * idx_global + 2
 
-                # dibujar líneas a hijos
+                # Líneas debajo del nodo (zorder=1)
                 if left < n:
                     for p_i in range(len(niveles[lvl+1])):
                         if sum(len(l) for l in niveles[:lvl+1]) + p_i == left:
@@ -369,7 +366,8 @@ class App:
                     else: p_left = 0
                     x_left = (p_left + 1) / (len(niveles[lvl+1]) + 1)
                     y_left = 1 - (lvl + 2) / (niveles_count + 1)
-                    self.ax_heap.plot([x, x_left], [y, y_left], linewidth=1, color="k")
+                    self.ax_heap.plot([x, x_left], [y, y_left],
+                                    linewidth=1, color="k", zorder=1)
 
                 if right < n:
                     for p_i in range(len(niveles[lvl+1])):
@@ -379,24 +377,29 @@ class App:
                     else: p_right = 0
                     x_right = (p_right + 1) / (len(niveles[lvl+1]) + 1)
                     y_right = 1 - (lvl + 2) / (niveles_count + 1)
-                    self.ax_heap.plot([x, x_right], [y, y_right], linewidth=1, color="k")
+                    self.ax_heap.plot([x, x_right], [y, y_right],
+                                    linewidth=1, color="k", zorder=1)
 
-                # ==================== CÍRCULO COLOREADO POR PRIORIDAD ====================
+                # Círculo por prioridad (zorder=3)
                 color = App.color_por_prioridad(tarea.prioridad_str)
-
-                circ = patches.Circle((x, y), 0.03,
+                circ = patches.Circle((x, y), 0.045,
                                     facecolor=color,
-                                    edgecolor="#0366d6")
+                                    edgecolor="#0366d6",
+                                    linewidth=1.2,
+                                    zorder=3)
                 self.ax_heap.add_patch(circ)
 
-                label = str(tarea.id)
-                self.ax_heap.text(x, y, label, ha="center", va="center", fontsize=8)
-                # ==========================================================================
+                # Texto encima (zorder=4)
+                self.ax_heap.text(x, y, str(tarea.id),
+                                ha="center", va="center",
+                                fontsize=10, zorder=4)
 
         self.ax_heap.set_xlim(0, 1)
         self.ax_heap.set_ylim(0, 1)
         self.ax_heap.set_axis_off()
+        self.ax_heap.set_aspect("equal", adjustable="datalim")
         self.canvas_heap.draw()
+
 
 
 
@@ -430,37 +433,53 @@ class App:
             self.canvas_avl.draw()
             return
 
-        max_x = max(x for x, y in posiciones.values())
-        max_depth = max(y for x, y in posiciones.values())
+        # Caso especial: un solo nodo -> centrarlo (evita problemas de escala/visibilidad)
+        if len(posiciones) == 1:
+            # obtener el único nodo
+            nodo_unico = next(iter(posiciones.keys()))
+            norm = {nodo_unico: (0.5, 0.5)}
+        else:
+            max_x = max(x for x, y in posiciones.values())
+            max_depth = max(y for x, y in posiciones.values())
 
-        norm = {}
-        for nodo, (x, d) in posiciones.items():
-            nx = 0.05 + 0.9 * (x / (max_x if max_x > 0 else 1))
-            ny = 0.9 - 0.8 * (d / (max_depth if max_depth > 0 else 1))
-            norm[nodo] = (nx, ny)
+            norm = {}
+            for nodo, (x, d) in posiciones.items():
+                # normalizamos; si max_x o max_depth son 0 se usa 1 para evitar división por 0
+                nx = 0.05 + 0.9 * (x / (max_x if max_x > 0 else 1))
+                ny = 0.9 - 0.8 * (d / (max_depth if max_depth > 0 else 1))
+                norm[nodo] = (nx, ny)
 
-        # aristas
+        # aristas (dibujadas primero - debajo de nodos)
         for nodo, (nx, ny) in norm.items():
-            if nodo.izquierda:
-                cx, cy = norm[nodo.izquierda]
-                self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1)
-            if nodo.derecha:
-                cx, cy = norm[nodo.derecha]
-                self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1)
+            if getattr(nodo, "izquierda", None):
+                child = nodo.izquierda
+                if child in norm:
+                    cx, cy = norm[child]
+                    self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1, zorder=1)
+            if getattr(nodo, "derecha", None):
+                child = nodo.derecha
+                if child in norm:
+                    cx, cy = norm[child]
+                    self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1, zorder=1)
 
-        # ==================== DIBUJO DE NODOS COLOREADOS ====================
+        # nodos (encima de las líneas)
         for nodo, (nx, ny) in norm.items():
             tarea = nodo.tarea
             color = App.color_por_prioridad(tarea.prioridad_str)
 
-            circ = patches.Circle((nx, ny), 0.03,
+            circ = patches.Circle((nx, ny), 0.045,
                                 facecolor=color,
-                                edgecolor="#2b8f4a")
+                                edgecolor="#2b8f4a",
+                                linewidth=1.2,
+                                zorder=3)
             self.ax_avl.add_patch(circ)
-            self.ax_avl.text(nx, ny, str(tarea.id), ha="center", va="center", fontsize=8)
-        # =====================================================================
+            self.ax_avl.text(nx, ny, str(tarea.id), ha="center", va="center",
+                            fontsize=10, zorder=4)
 
         self.ax_avl.set_xlim(0, 1)
         self.ax_avl.set_ylim(0, 1)
         self.ax_avl.set_axis_off()
+        self.ax_avl.set_aspect("equal", adjustable="datalim")
         self.canvas_avl.draw()
+
+

@@ -1,8 +1,8 @@
-import Tarea
+import Task
 from AVL import AVLTree
 from Heap import MaxHeap
 
-class GestorTareas:
+class TaskManager:
     #------------------------------------------------------------------------------------
     def __init__(self):
         self.heap = MaxHeap()
@@ -14,7 +14,7 @@ class GestorTareas:
         if self.avl.buscar(self.raiz_avl, int(id)):
             return False, "ID ya existe"
         
-        nueva = Tarea.Tarea(id, descripcion, prioridad, fecha_creacion,fecha_vencimiento)
+        nueva = Task.Task(id, descripcion, prioridad, fecha_creacion,fecha_vencimiento)
         self.heap.insertar(nueva)
         self.raiz_avl = self.avl.insertar(self.raiz_avl, nueva)
         return True, "Tarea agregada"
