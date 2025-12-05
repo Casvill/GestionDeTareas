@@ -299,7 +299,6 @@ class App:
 
         # Llenar tabla
         for t in self.gestor.historial:
-            # historial guarda dicts según tu implementación
             tree_h.insert(
                 "",
                 "end",
@@ -312,6 +311,19 @@ class App:
     # -----------------------------------------------------------------------------------
     # ----------------------- Visualización: HEAP y AVL (Matplotlib) --------------------
     # -----------------------------------------------------------------------------------
+
+    # ========================== CAMBIOS DE COLORES POR PRIORIDAD ==========================
+    @staticmethod
+    def color_por_prioridad(prio_str):
+        if prio_str == "Alta":
+            return "#ff8a8a"     # rojo pastel
+        elif prio_str == "Media":
+            return "#ffe08a"     # amarillo pastel
+        else:
+            return "#b4ffb4"     # verde pastel
+
+    # ======================================================================================
+
 
     def dibujar_heap(self):
         """Dibuja el heap (self.gestor.heap.heap) como árbol completo por niveles."""
@@ -342,52 +354,51 @@ class App:
             m = len(nodos)
             for j, tarea in enumerate(nodos):
                 x = (j + 1) / (m + 1)
-                # dibujar líneas hacia hijos si existen
+
+                # calcular índice global
                 idx_global = sum(len(l) for l in niveles[:lvl]) + j
                 left = 2 * idx_global + 1
                 right = 2 * idx_global + 2
 
-                # calcular coordenadas de hijos en su respectivo nivel
+                # dibujar líneas a hijos
                 if left < n:
-                    # encontrar posición del hijo en su nivel
-                    # left pertenece a nivel lvl+1, posición p_left en ese nivel:
-                    next_nodes = niveles[lvl+1]
-                    # la posición relativa del hijo en el siguiente nivel se puede derivar:
-                    # p_left = index in next_nodes where global idx == left
-                    # simple: compute cumulative to find index
-                    cum = 0
                     for p_i in range(len(niveles[lvl+1])):
                         if sum(len(l) for l in niveles[:lvl+1]) + p_i == left:
                             p_left = p_i
                             break
-                    else:
-                        p_left = 0
+                    else: p_left = 0
                     x_left = (p_left + 1) / (len(niveles[lvl+1]) + 1)
                     y_left = 1 - (lvl + 2) / (niveles_count + 1)
                     self.ax_heap.plot([x, x_left], [y, y_left], linewidth=1, color="k")
 
                 if right < n:
-                    cum = 0
                     for p_i in range(len(niveles[lvl+1])):
                         if sum(len(l) for l in niveles[:lvl+1]) + p_i == right:
                             p_right = p_i
                             break
-                    else:
-                        p_right = 0
+                    else: p_right = 0
                     x_right = (p_right + 1) / (len(niveles[lvl+1]) + 1)
                     y_right = 1 - (lvl + 2) / (niveles_count + 1)
                     self.ax_heap.plot([x, x_right], [y, y_right], linewidth=1, color="k")
 
-                # dibujar nodo (círculo)
-                circ = patches.Circle((x, y), 0.03, facecolor="#a9d6ff", edgecolor="#0366d6")
+                # ==================== CÍRCULO COLOREADO POR PRIORIDAD ====================
+                color = App.color_por_prioridad(tarea.prioridad_str)
+
+                circ = patches.Circle((x, y), 0.03,
+                                    facecolor=color,
+                                    edgecolor="#0366d6")
                 self.ax_heap.add_patch(circ)
-                label = str(tarea.id) if hasattr(tarea, "id") else str(tarea)
+
+                label = str(tarea.id)
                 self.ax_heap.text(x, y, label, ha="center", va="center", fontsize=8)
+                # ==========================================================================
 
         self.ax_heap.set_xlim(0, 1)
         self.ax_heap.set_ylim(0, 1)
         self.ax_heap.set_axis_off()
         self.canvas_heap.draw()
+
+
 
     def dibujar_avl(self):
         """Dibuja el árbol AVL a partir de self.gestor.raiz_avl (NodoAVL)."""
@@ -400,7 +411,6 @@ class App:
             self.canvas_avl.draw()
             return
 
-        # calcular posiciones (in-order) para espacios x, y = depth
         posiciones = {}
         x_counter = [0]
 
@@ -420,7 +430,6 @@ class App:
             self.canvas_avl.draw()
             return
 
-        # normalizar coordenadas: x -> [0.05,0.95], y -> [0.9,0.1] según depth
         max_x = max(x for x, y in posiciones.values())
         max_depth = max(y for x, y in posiciones.values())
 
@@ -430,23 +439,26 @@ class App:
             ny = 0.9 - 0.8 * (d / (max_depth if max_depth > 0 else 1))
             norm[nodo] = (nx, ny)
 
-        # dibujar aristas
+        # aristas
         for nodo, (nx, ny) in norm.items():
-            if getattr(nodo, "izquierda", None):
-                child = nodo.izquierda
-                cx, cy = norm[child]
+            if nodo.izquierda:
+                cx, cy = norm[nodo.izquierda]
                 self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1)
-            if getattr(nodo, "derecha", None):
-                child = nodo.derecha
-                cx, cy = norm[child]
+            if nodo.derecha:
+                cx, cy = norm[nodo.derecha]
                 self.ax_avl.plot([nx, cx], [ny, cy], color="k", linewidth=1)
 
-        # dibujar nodos
+        # ==================== DIBUJO DE NODOS COLOREADOS ====================
         for nodo, (nx, ny) in norm.items():
-            tid = nodo.tarea.id if hasattr(nodo.tarea, "id") else str(nodo.tarea)
-            circ = patches.Circle((nx, ny), 0.03, facecolor="#c7f9d4", edgecolor="#2b8f4a")
+            tarea = nodo.tarea
+            color = App.color_por_prioridad(tarea.prioridad_str)
+
+            circ = patches.Circle((nx, ny), 0.03,
+                                facecolor=color,
+                                edgecolor="#2b8f4a")
             self.ax_avl.add_patch(circ)
-            self.ax_avl.text(nx, ny, str(tid), ha="center", va="center", fontsize=8)
+            self.ax_avl.text(nx, ny, str(tarea.id), ha="center", va="center", fontsize=8)
+        # =====================================================================
 
         self.ax_avl.set_xlim(0, 1)
         self.ax_avl.set_ylim(0, 1)
