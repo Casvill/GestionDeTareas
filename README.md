@@ -2,7 +2,7 @@
 
 Este proyecto implementa un sistema de gestión de tareas utilizando dos estructuras fundamentales:
 
-* Heap mínimo (para gestionar tareas por prioridad)
+* MaxHeap (para gestionar tareas por prioridad)
 
 * Árbol AVL (para mantener las tareas balanceadas y permitir búsquedas eficientes)
 
