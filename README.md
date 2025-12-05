@@ -31,7 +31,7 @@ o en algunos sistemas:
 La interfaz gráfica se abrirá automáticamente.   
 
 
-#### Descripción breve  del sistema: 
+### Descripción breve  del sistema: 
 La interfaz contiene 2 paneles: Tabla y Visual.
 * Panel Tabla: 
 En el panel Tabla se verá una lista con las tareas pendientes.
@@ -48,8 +48,9 @@ Cada nodo se representa con un círulo y un número dentro del círculo que repr
 🟢 Baja   
    
    
-📁 Estructura del proyecto:   
-Proyecto:
+
+### 📁 Estructura del proyecto:   
+Proyecto:   
 │── __main__.py        # Punto de entrada   
 │── GUI.py             # Interfaz gráfica completa   
 ├── Heap.py            # Implementación del heap   
@@ -60,7 +61,7 @@ Proyecto:
 │── README.md          # Este archivo   
     
    
-#### Autor:
+### Autor:
 Daniel Castillo Villamarín   
 Universidad del Valle   
 2025   
