@@ -17,7 +17,7 @@ Entrar al proyecto:
    
 2. Crear y activar un entorno virtual:   
 ```python -m venv venv```   
-```venv\Scripts\activate```   
+```venv\Scripts\Activate```   
    
 3. Instalar dependencias:   
 El proyecto utiliza unas pocas librerías externas. Instálalas con:   
