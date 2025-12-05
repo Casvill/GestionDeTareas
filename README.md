@@ -13,18 +13,18 @@ Además, incluye una interfaz gráfica (GUI) desarrollada en Tkinter, con visual
 ```git clone https://github.com/Casvill/GestionDeTareas.git```   
 Entrar al proyecto:   
 ```cd GestionDeTareas```   
-<br>
+   
 2. Crear y activar un entorno virtual:   
 ```python -m venv venv```   
 ```venv\Scripts\activate```   
-<br>
+   
 3. Instalar dependencias:   
 El proyecto utiliza unas pocas librerías externas. Instálalas con:   
 ```pip install -r requirements.txt```   
-<br>
+   
 4. Ejecutar el programa:   
 Desde la carpeta raíz del proyecto:   
-```python __main__.py```<br>   
+```python __main__.py```      
 o en algunos sistemas:   
 ```python3 __main__.py```   
    
@@ -39,14 +39,14 @@ Cada tarea en la lista de tareas se resalta con un solor según su prioridad:
 🔴 Alta   
 🟡 Media   
 🟢 Baja   
-<br>   
+   
 * Panel Visual:   
 Se divide en dos, la parte de arriba muestra de manera gráfica  el HEAP como árbol y la parte de abajo muestra de manera gráfica el árbol AVL.
 Cada nodo se representa con un círulo y un número dentro del círculo que representa su ID, y cada círculo tiene un color que representa su prioridad así:   
 🔴 Alta   
 🟡 Media   
 🟢 Baja   
-<br>
+   
    
 📁 Estructura del proyecto:   
 Proyecto:
@@ -58,8 +58,8 @@ Proyecto:
 │── TaskManager.py     # Lógica de integración   
 │── requirements.txt   # Archivo de dependencias   
 │── README.md          # Este archivo   
-<br>   
-
+    
+   
 #### Autor:
 Daniel Castillo Villamarín   
 Universidad del Valle   
