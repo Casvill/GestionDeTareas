@@ -71,6 +71,11 @@ class MaxHeap:
             self.heap[idx], self.heap[mayor] = self.heap[mayor], self.heap[idx]
             self._sift_down(mayor)
 
+
+
+
+
+    # ----------------MÉTODOS PARA IMPRIMIR COMO ARBOL EN FORMATO ASCII--------------------------------
     def imprimir_como_arbol(self):
         if not self.heap:
             print("Heap vacío.")
@@ -168,3 +173,4 @@ class MaxHeap:
                 print()
 
         print("\n=============================================\n")
+    # -----------------------------------------------------------------------------------------

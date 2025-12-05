@@ -144,6 +144,10 @@ class AVLTree:
         return self.balancear(nodo)
     
 
+
+
+    #----------------MÉTODOS PARA IMPRIMIR EL AVL EN FORMATO ASCII---------------------------------------
+
     #------------------ IMPRIMIR AVL ------------------#
     def imprimir_arbol(self, nodo, nivel=0, prefijo="· "):
         """Imprime el árbol AVL horizontalmente (rotado 90°)."""
@@ -249,4 +253,4 @@ class AVLTree:
 
         print("---------------------------------------------------------")
 
-
+    #----------------------------------------------------------------------------------------------
