@@ -8,6 +8,7 @@ Este proyecto implementa un sistema de gestión de tareas utilizando dos estruct
 
 Además, incluye una interfaz gráfica (GUI) desarrollada en Tkinter, con visualización en vivo del Heap y el AVL mediante Matplotlib.
 
+___
 ### Cómo ejecutar el programa:
 1. Clonar el repositorio:   
 ```git clone https://github.com/Casvill/GestionDeTareas.git```   
@@ -30,7 +31,7 @@ o en algunos sistemas:
    
 La interfaz gráfica se abrirá automáticamente.   
 
-
+___
 ### Descripción breve  del sistema: 
 La interfaz contiene 2 paneles: Tabla y Visual.
 * Panel Tabla: 
@@ -48,7 +49,7 @@ Cada nodo se representa con un círulo y un número dentro del círculo que repr
 🟢 Baja   
    
    
-
+___
 ### 📁 Estructura del proyecto:   
 Proyecto:   
 │── __main__.py        # Punto de entrada   
@@ -61,6 +62,7 @@ Proyecto:
 │── README.md          # Este archivo   
     
    
+   ___
 ### Autor:
 Daniel Castillo Villamarín   
 Universidad del Valle   
