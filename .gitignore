@@ -1,0 +1,6 @@
+venv/
+__pycache__/AVL.cpython-312.pyc
+__pycache__/GUI.cpython-312.pyc
+__pycache__/GestorTareas.cpython-312.pyc
+__pycache__/Heap.cpython-312.pyc
+__pycache__/Tarea.cpython-312.pyc
