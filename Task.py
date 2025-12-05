@@ -1,4 +1,4 @@
-class Tarea:
+class Task:
     def __init__(self, id_tarea, descripcion, prioridad, fecha_creacion, fecha_vencimiento):
         self.id = int(id_tarea)
         self.descripcion = descripcion
