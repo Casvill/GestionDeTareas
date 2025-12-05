@@ -63,7 +63,9 @@ Proyecto:
     
    
    ___
-### Autor:
+### Autores:
 Daniel Castillo Villamarín   
+Camilo Portilla Ortega
+Juan Camilo Agrace Landazury
 Universidad del Valle   
 2025   
